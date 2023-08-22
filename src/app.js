@@ -6,6 +6,7 @@ require('dotenv').config()
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
+const cors = require('cors');
 const notFoundMiddleware = require('./middlewares/not-found');
 const authenticateUser = require('./middlewares/authentication');
 const errorHandlerMiddleware = require('./middlewares/error-handler');
@@ -18,6 +19,8 @@ const contactGroupRoutes = require('./routes/contactGroup');
 
 // Middleware
 app.use(bodyParser.json());
+
+app.use(cors())
 
 // Test route
 app.get('/', (req, res) => {
