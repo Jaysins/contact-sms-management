@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const baseSchema = require("../base/model")
 
 const contactSchema = new mongoose.Schema({
     name: { type: String, required: true },
@@ -9,11 +10,12 @@ const contactSchema = new mongoose.Schema({
         required: [true, 'Please provide user'],
     },
     group: {
-        type: mongoose.Types.ObjectId, ref: "ContactGroup",
+        type: mongoose.Types.ObjectId,
+        ref: "ContactGroup",
         required: false
-    },
-    dateCreated: { type: Date, default: Date.now },
-    lastUpdated: { type: Date, default: Date.now }
+    }
 });
+
+contactSchema.add(baseSchema); // Extend with the common fields
 
 module.exports = mongoose.model('Contact', contactSchema);

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
+const baseSchema = require("../base/model");
 
-const MessageSchema = new mongoose.Schema({
+const messageSchema = new mongoose.Schema({
     type: {type: String, required: true},
     from: {type: String, required: true},
     recipient: {type: String, required: true},
@@ -10,9 +11,9 @@ const MessageSchema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: 'User',
         required: [true, 'Please provide user'],
-    },
-    dateCreated: {type: Date, default: Date.now},
-    lastUpdated: {type: Date, default: Date.now}
+    }
 });
 
-module.exports = mongoose.model('Message', MessageSchema);
+messageSchema.add(baseSchema); // Extend with the common fields
+
+module.exports = mongoose.model('Message', messageSchema);

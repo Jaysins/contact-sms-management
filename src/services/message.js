@@ -29,7 +29,7 @@ class MessageService {
         }, {new: true}).populate("user");
     }
 
-    async logMessage(senderId, content, user, contactIds = null, contactGroups = null, type = "sms") {
+    async logMessage(senderId, content, user, contactIds = null, contactGroupIds = null, type = "sms") {
 
         const senderId_ = await SenderId.findOne({"_id": senderId})
         const senderIdCode = senderId_.code
@@ -39,11 +39,11 @@ class MessageService {
         }
         let recipients = [];
 
-        if (contactIds) {
+        if (contactIds.length >= 1) {
             recipients = await Contact.find({_id: {"$in": contactIds}})
         }
-        if (contactGroups) {
-            recipients = await Contact.find({"group": {"$in": contactGroups}})
+        if (contactGroupIds.length >= 1) {
+            recipients = await Contact.find({"group": {"$in": contactGroupIds}})
         }
 
         recipients.forEach(recipient => {

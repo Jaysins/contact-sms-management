@@ -25,18 +25,18 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    const {senderId, content, contactIds, contactGroups, type} = req.body;
+    const {senderId, content, contactIds, contactGroupIds, type} = req.body;
 
-    if (!senderId || !content){
+    if (!content){
         throw new BadRequestError("Empty Message")
     }
 
-    if (!contactIds && !contactGroups){
+    if (!contactIds && !contactGroupIds){
         throw new BadRequestError("No recipient")
     }
 
     const logMessage = await messageService.logMessage(senderId, content, req.user, contactIds,
-        contactGroups, type);
+        contactGroupIds, type);
     res.status(StatusCodes.CREATED).json(logMessage)
 })
 

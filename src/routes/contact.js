@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const contactService = require("../services/contact")
 const {StatusCodes} = require("http-status-codes");
-const {NotFoundError, UnauthenticatedError} = require("../errors");
+const {NotFoundError, UnauthenticatedError, BadRequestError} = require("../errors");
+
+const contactService = require("../services/contact")
+const contactGroupService = require("../services/contactGroup");
 
 
 router.get('/', async (req, res) => {
@@ -25,10 +27,16 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    const {name, phoneNumber} = req.body;
+    const {name, phoneNumber, group} = req.body;
+
+    const checkContact = await contactService.checkExistingContact(phoneNumber, req.user)
+
+    if (checkContact){
+        throw new BadRequestError("Contact with this number already exists")
+    }
 
     const newContact = await contactService.createContact(
-        name, phoneNumber, req.user);
+        name, phoneNumber, group, req.user);
     res.status(StatusCodes.CREATED).json(newContact)
 })
 
@@ -59,6 +67,24 @@ router.post('/:id', async (req, res) => {
 
     const updatedContact = await contactService.updateContact(contactId, updatedData);
     res.status(StatusCodes.OK).json(updatedContact)
+})
+
+router.delete('/:id', async (req, res) => {
+
+    const {id: contactId} = req.params
+
+    const contact = await contactService.getContact(contactId)
+
+    if (!contact) {
+        throw new NotFoundError(`Requested resource with id: ${contactId} not found`)
+    }
+
+    if (contact.user._id.toString() !== req.user.userId){
+        throw new UnauthenticatedError("You are not authorized to access this resource")
+    }
+
+    const updatedContact = await contactService.deleteContact(contactId);
+    res.status(StatusCodes.OK).json({"status": "successful"})
 })
 
 

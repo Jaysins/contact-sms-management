@@ -2,16 +2,16 @@ const ContactGroup = require('../models/ContactGroup');
 
 class ContactGroupService {
     async getAllContactGroups(user) {
-        return ContactGroup.find({user: user.userId}).populate("user");
+        return ContactGroup.find({'active': true});
     }
 
     async getContactGroup(contactGroupId) {
-        return ContactGroup.findOne({_id: contactGroupId}).populate("user");
+        return ContactGroup.findOne({"$or": [{_id: contactGroupId}, {code: contactGroupId}]});
     }
 
     async createContactGroup(name, user) {
 
-        return (await ContactGroup.create({name, code:name.toLowerCase(), user: user.userId})).populate("user");
+        return (await ContactGroup.create({name, code: name.toLowerCase(), user: user.userId}));
     }
 
     async updateContactGroup(contactGroupId, updatedData) {

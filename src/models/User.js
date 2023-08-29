@@ -1,5 +1,6 @@
 
 const mongoose = require('mongoose');
+const baseSchema = require("../base/model")
 const bcrypt = require("bcrypt")
 const jwt = require('jsonwebtoken');
 
@@ -7,9 +8,7 @@ const jwt = require('jsonwebtoken');
 const userSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    dateCreated: { type: Date, default: Date.now },
-    lastUpdated: { type: Date, default: Date.now }
+    password: { type: String, required: true }
 });
 
 userSchema.methods.createJWT = function () {
@@ -25,6 +24,8 @@ userSchema.methods.createJWT = function () {
 userSchema.methods.comparePassword = async function (candidate) {
     return await bcrypt.compare(candidate, this.password)
 }
+
+userSchema.add(baseSchema); // Extend with the common fields
 
 module.exports = mongoose.model('User', userSchema)
 

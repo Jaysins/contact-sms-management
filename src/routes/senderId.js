@@ -8,7 +8,7 @@ const {NotFoundError, UnauthenticatedError} = require("../errors");
 router.get('/', async (req, res) => {
     // Implement fetching senderIds from the database
     const senderIds = await senderIdService.getAllSenderIds(req.user);
-    res.status(StatusCodes.CREATED).json({"results": senderIds})
+    res.status(StatusCodes.OK).json({"results": senderIds})
 });
 
 router.get('/:id', async (req, res) => {
@@ -25,8 +25,8 @@ router.get('/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    const {name} = req.body;
-    const newContact = await senderIdService.createSenderId(name, req.user);
+    const {name, group} = req.body;
+    const newContact = await senderIdService.createSenderId(name, group, req.user);
     res.status(StatusCodes.OK).json(newContact)
 })
 

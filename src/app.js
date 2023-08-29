@@ -15,7 +15,9 @@ const contactRoutes = require('./routes/contact');
 const authRoutes = require('./routes/auth');
 const messageRoutes = require('./routes/message');
 const senderIdRoutes = require('./routes/senderId');
+const senderIdGroupRoutes = require('./routes/senderIdGroups');
 const contactGroupRoutes = require('./routes/contactGroup');
+const addToContactGroupRoutes = require('./routes/addToContactGroup');
 
 // Middleware
 app.use(bodyParser.json());
@@ -30,8 +32,11 @@ app.get('/', (req, res) => {
 
 // Use API routes
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/contactGroups', contactGroupRoutes);
+app.use('/api/v1/senderIdGroups', senderIdGroupRoutes);
+
 app.use('/api/v1/contacts', authenticateUser, contactRoutes);
-app.use('/api/v1/contactGroups', authenticateUser, contactGroupRoutes);
+app.use('/api/v1/addToContactGroup', authenticateUser, addToContactGroupRoutes);
 app.use('/api/v1/senderIds', authenticateUser, senderIdRoutes);
 app.use('/api/v1/messages', authenticateUser, messageRoutes);
 
